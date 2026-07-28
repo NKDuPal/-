@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 추첨기</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --surface: #181818;
+      --surface-2: #1f1f1f;
+      --text: #ffffff;
+      --muted: #b3b3b3;
+      --accent: #1ed760;
+      --border: #4d4d4d;
+      --shadow-lg: rgba(0,0,0,0.5) 0px 8px 24px;
+      --shadow-md: rgba(0,0,0,0.3) 0px 8px 8px;
+      --inset: rgb(18,18,18) 0px 1px 0px, rgb(124,124,124) 0px 0px 0px 1px inset;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "SpotifyMixUI", "SpotifyMixUITitle", "CircularSp", "Segoe UI", "Noto Sans KR", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(30, 215, 96, 0.10), transparent 30%),
+        radial-gradient(circle at top right, rgba(83, 157, 245, 0.10), transparent 24%),
+        linear-gradient(180deg, #121212 0%, #151515 100%);
+    }
+
+    .wrap {
+      min-height: 100%;
+      padding: 22px;
+      display: grid;
+      place-items: center;
+    }
+
+    .app {
+      width: min(1160px, 100%);
+      display: grid;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 8px 4px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #3ef07c, #1ed760 65%, #17b44d);
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .pill-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-nav span {
+      padding: 8px 14px;
+      border-radius: 9999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 22px;
+      min-height: 600px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .hero-head h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: -0.04em;
+    }
+
+    .hero-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .chat {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      background: linear-gradient(180deg, #1f1f1f, #181818);
+      border-radius: 8px;
+      border: 1px solid rgba(124,124,124,0.35);
+    }
+
+    .messages {
+      display: grid;
+      gap: 10px;
+      min-height: 260px;
+      max-height: 360px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .msg {
+      width: fit-content;
+      max-width: min(560px, 100%);
+      padding: 12px 14px;
+      border-radius: 16px;
+      line-height: 1.55;
+      box-shadow: var(--shadow-md);
+    }
+
+    .msg.bot {
+      background: #272727;
+      border: 1px solid rgba(124,124,124,0.25);
+      color: var(--text);
+      border-top-left-radius: 6px;
+    }
+
+    .msg.user {
+      margin-left: auto;
+      background: var(--accent);
+      color: #04160a;
+      border-top-right-radius: 6px;
+      font-weight: 700;
+    }
+
+    .composer {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1.1fr 0.9fr auto;
+    }
+
+    @media (max-width: 760px) {
+      .composer { grid-template-columns: 1fr; }
+    }
+
+    input[type="date"] {
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 12px 16px;
+      outline: none;
+      box-shadow: var(--shadow-md);
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      opacity: 0.75;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+      background: var(--surface-2);
+      color: var(--text);
+      box-shadow: var(--shadow-md);
+    }
+
+    button:hover { transform: translateY(-1px); background: #2a2a2a; }
+    .primary {
+      background: var(--accent);
+      color: #04160a;
+      border-color: rgba(30,215,96,0.65);
+    }
+
+    .side {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      border: 1px solid rgba(124,124,124,0.25);
+      box-shadow: var(--inset);
+      display: grid;
+      gap: 4px;
+    }
+
+    .stat small {
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
+    }
+
+    .history {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 10px 12px;
+      border-radius: 9999px;
+      background: #272727;
+      border: 1px solid rgba(124,124,124,0.25);
+      color: #fff;
+      font-size: 0.92rem;
+    }
+
+    .note {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div>
+            <div>Star Lotto Chatbot</div>
+            <small>OpenAI API + zodiac draw</small>
+          </div>
+        </div>
+        <div class="pill-nav">
+          <span>Chat</span>
+          <span>Zodiac</span>
+          <span>Draw</span>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="panel hero">
+          <div class="hero-head">
+            <div>
+              <h1>생년월일로 별자리를 판별하고, 시드 기반으로 번호를 추첨하는 챗봇</h1>
+              <p>생년월일을 입력하면 별자리를 판별하고, 그 결과를 바탕으로 OpenAI `gpt-5.4-mini`가 짧은 응답을 생성합니다.</p>
+            </div>
+            <div class="badge" id="status">대기 중</div>
+          </div>
+
+          <div class="chat">
+            <div class="messages" id="messages">
+              <div class="msg bot">안녕하세요. 생년월일을 입력하면 별자리를 판별하고 번호를 추천해드릴게요.</div>
+            </div>
+
+            <div class="composer">
+              <input id="birthDate" type="date" />
+              <button id="quickBtn">Ask</button>
+              <button class="primary" id="drawBtn">Draw</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel side">
+          <div class="stat">
+            <small>recent zodiac</small>
+            <strong id="zodiac">-</strong>
+          </div>
+          <div class="stat">
+            <small>recent numbers</small>
+            <strong id="latest">-</strong>
+          </div>
+          <div>
+            <h2 style="margin:0 0 10px; font-size:1rem;">recent draws</h2>
+            <div class="history" id="history"></div>
+          </div>
+          <p class="note">
+            서버에서 `OPENAI_API_KEY`를 사용해 `gpt-5.4-mini`에 요청합니다. 브라우저에는 키가 노출되지 않습니다.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById("messages");
+    const birthDate = document.getElementById("birthDate");
+    const drawBtn = document.getElementById("drawBtn");
+    const quickBtn = document.getElementById("quickBtn");
+    const statusEl = document.getElementById("status");
+    const zodiacEl = document.getElementById("zodiac");
+    const latestEl = document.getElementById("latest");
+    const historyEl = document.getElementById("history");
+    const history = [];
+
+    function addMessage(text, who = "bot") {
+      const el = document.createElement("div");
+      el.className = `msg ${who}`;
+      el.textContent = text;
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function renderHistory() {
+      historyEl.innerHTML = "";
+      history.slice(0, 8).forEach((row) => {
+        const el = document.createElement("div");
+        el.className = "chip";
+        el.textContent = row.join(", ");
+        historyEl.appendChild(el);
+      });
+    }
+
+    async function ask() {
+      if (!birthDate.value) {
+        statusEl.textContent = "생년월일을 입력하세요";
+        addMessage("생년월일을 먼저 입력해주세요.", "bot");
+        return;
+      }
+
+      const value = birthDate.value;
+      addMessage(`생년월일: ${value}`, "user");
+      statusEl.textContent = "추첨 중...";
+
+      try {
+        const response = await fetch("/api/draw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ birthDate: value }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "요청 실패");
+
+        addMessage(data.reply, "bot");
+        zodiacEl.textContent = data.zodiac;
+        latestEl.textContent = data.numbers.join(", ");
+        history.unshift(data.numbers);
+        if (history.length > 8) history.pop();
+        renderHistory();
+        statusEl.textContent = "완료";
+      } catch (error) {
+        addMessage(`오류가 발생했어요. ${error.message}`, "bot");
+        statusEl.textContent = "오류";
+      }
+    }
+
+    drawBtn.addEventListener("click", ask);
+    quickBtn.addEventListener("click", ask);
+    birthDate.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") ask();
+    });
+  </script>
+</body>
+</html>
