@@ -30,18 +30,8 @@
         linear-gradient(180deg, #121212 0%, #151515 100%);
     }
 
-    .wrap {
-      min-height: 100%;
-      padding: 22px;
-      display: grid;
-      place-items: center;
-    }
-
-    .app {
-      width: min(1160px, 100%);
-      display: grid;
-      gap: 16px;
-    }
+    .wrap { min-height: 100%; padding: 22px; display: grid; place-items: center; }
+    .app { width: min(1160px, 100%); display: grid; gap: 16px; }
 
     .topbar {
       display: flex;
@@ -52,224 +42,77 @@
       padding: 8px 4px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.02em; }
     .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      width: 40px; height: 40px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #3ef07c, #1ed760 65%, #17b44d);
       box-shadow: var(--shadow-md);
     }
+    .brand small { display: block; color: var(--muted); font-weight: 400; margin-top: 2px; }
 
-    .brand small {
-      display: block;
-      color: var(--muted);
-      font-weight: 400;
-      margin-top: 2px;
-    }
-
-    .pill-nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .pill-nav { display: flex; gap: 8px; flex-wrap: wrap; }
     .pill-nav span {
-      padding: 8px 14px;
-      border-radius: 9999px;
-      background: var(--surface-2);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      font-size: 0.88rem;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+      padding: 8px 14px; border-radius: 9999px;
+      background: var(--surface-2); color: var(--muted);
+      border: 1px solid var(--border); font-size: 0.88rem;
+      letter-spacing: 1.2px; text-transform: uppercase;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.35fr 0.85fr;
-      gap: 16px;
-    }
+    .grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 16px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    .panel {
-      background: var(--surface);
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-    }
-
-    .hero {
-      padding: 22px;
-      min-height: 600px;
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-
-    .hero-head h1 {
-      margin: 0;
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      letter-spacing: -0.04em;
-    }
-
-    .hero-head p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      line-height: 1.5;
+    .panel { background: var(--surface); border-radius: 8px; box-shadow: var(--shadow-lg); overflow: hidden; }
+    .hero { padding: 22px; min-height: 600px; display: grid; gap: 18px; align-content: start; }
+    .hero-head h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.04em; }
+    .hero-head p { margin: 4px 0 0; color: var(--muted); line-height: 1.5; }
+    .badge {
+      padding: 8px 12px; border-radius: 9999px; background: var(--surface-2);
+      color: var(--muted); border: 1px solid var(--border); font-size: 0.88rem;
+      letter-spacing: 1.2px; text-transform: uppercase;
     }
 
     .chat {
-      display: grid;
-      gap: 12px;
-      padding: 18px;
+      display: grid; gap: 12px; padding: 18px;
       background: linear-gradient(180deg, #1f1f1f, #181818);
-      border-radius: 8px;
-      border: 1px solid rgba(124,124,124,0.35);
+      border-radius: 8px; border: 1px solid rgba(124,124,124,0.35);
     }
-
-    .messages {
-      display: grid;
-      gap: 10px;
-      min-height: 260px;
-      max-height: 360px;
-      overflow: auto;
-      padding-right: 4px;
-    }
-
+    .messages { display: grid; gap: 10px; min-height: 260px; max-height: 360px; overflow: auto; padding-right: 4px; }
     .msg {
-      width: fit-content;
-      max-width: min(560px, 100%);
-      padding: 12px 14px;
-      border-radius: 16px;
-      line-height: 1.55;
-      box-shadow: var(--shadow-md);
+      width: fit-content; max-width: min(560px, 100%); padding: 12px 14px;
+      border-radius: 16px; line-height: 1.55; box-shadow: var(--shadow-md);
     }
+    .msg.bot { background: #272727; border: 1px solid rgba(124,124,124,0.25); color: var(--text); border-top-left-radius: 6px; }
+    .msg.user { margin-left: auto; background: var(--accent); color: #04160a; border-top-right-radius: 6px; font-weight: 700; }
 
-    .msg.bot {
-      background: #272727;
-      border: 1px solid rgba(124,124,124,0.25);
-      color: var(--text);
-      border-top-left-radius: 6px;
-    }
-
-    .msg.user {
-      margin-left: auto;
-      background: var(--accent);
-      color: #04160a;
-      border-top-right-radius: 6px;
-      font-weight: 700;
-    }
-
-    .composer {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: 1.1fr 0.9fr auto;
-    }
-
-    @media (max-width: 760px) {
-      .composer { grid-template-columns: 1fr; }
-    }
+    .composer { display: grid; gap: 10px; grid-template-columns: 1.1fr 0.9fr auto; }
+    @media (max-width: 760px) { .composer { grid-template-columns: 1fr; } }
 
     input[type="date"] {
-      width: 100%;
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      padding: 12px 16px;
-      outline: none;
-      box-shadow: var(--shadow-md);
+      width: 100%; background: var(--surface-2); color: var(--text);
+      border: 1px solid var(--border); border-radius: 9999px; padding: 12px 16px;
+      outline: none; box-shadow: var(--shadow-md);
     }
-
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(1);
-      opacity: 0.75;
-    }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.75; }
 
     button {
-      appearance: none;
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      padding: 12px 16px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease;
-      background: var(--surface-2);
-      color: var(--text);
-      box-shadow: var(--shadow-md);
+      appearance: none; border: 1px solid var(--border); border-radius: 9999px;
+      padding: 12px 16px; font-size: 0.88rem; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+      background: var(--surface-2); color: var(--text); box-shadow: var(--shadow-md);
     }
-
     button:hover { transform: translateY(-1px); background: #2a2a2a; }
-    .primary {
-      background: var(--accent);
-      color: #04160a;
-      border-color: rgba(30,215,96,0.65);
-    }
+    .primary { background: var(--accent); color: #04160a; border-color: rgba(30,215,96,0.65); }
 
-    .side {
-      padding: 18px;
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
+    .side { padding: 18px; display: grid; gap: 14px; align-content: start; }
     .stat {
-      padding: 16px;
-      border-radius: 8px;
-      background: var(--surface-2);
-      border: 1px solid rgba(124,124,124,0.25);
-      box-shadow: var(--inset);
-      display: grid;
-      gap: 4px;
+      padding: 16px; border-radius: 8px; background: var(--surface-2);
+      border: 1px solid rgba(124,124,124,0.25); box-shadow: var(--inset); display: grid; gap: 4px;
     }
-
-    .stat small {
-      color: var(--muted);
-      font-size: 0.82rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .stat strong {
-      font-size: 1.18rem;
-      letter-spacing: -0.03em;
-    }
-
-    .history {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .chip {
-      padding: 10px 12px;
-      border-radius: 9999px;
-      background: #272727;
-      border: 1px solid rgba(124,124,124,0.25);
-      color: #fff;
-      font-size: 0.92rem;
-    }
-
-    .note {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.92rem;
-      margin: 0;
-    }
+    .stat small { color: var(--muted); font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase; }
+    .stat strong { font-size: 1.18rem; letter-spacing: -0.03em; }
+    .history { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { padding: 10px 12px; border-radius: 9999px; background: #272727; border: 1px solid rgba(124,124,124,0.25); color: #fff; font-size: 0.92rem; }
+    .note { color: var(--muted); line-height: 1.6; font-size: 0.92rem; margin: 0; }
   </style>
 </head>
 <body>
@@ -304,7 +147,6 @@
             <div class="messages" id="messages">
               <div class="msg bot">안녕하세요. 생년월일을 입력하면 별자리를 판별하고 번호를 추천해드릴게요.</div>
             </div>
-
             <div class="composer">
               <input id="birthDate" type="date" />
               <button id="quickBtn">Ask</button>
@@ -326,9 +168,7 @@
             <h2 style="margin:0 0 10px; font-size:1rem;">recent draws</h2>
             <div class="history" id="history"></div>
           </div>
-          <p class="note">
-            서버에서 `OPENAI_API_KEY`를 사용해 `gpt-5.4-mini`에 요청합니다. 브라우저에는 키가 노출되지 않습니다.
-          </p>
+          <p class="note">서버 응답이 JSON이 아니어도 로컬 모드로 자동 전환되도록 해두었습니다.</p>
         </aside>
       </div>
     </div>
@@ -363,6 +203,50 @@
       });
     }
 
+    function zodiacFromDate(dateStr) {
+      const d = new Date(dateStr);
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      if ((m === 3 && day >= 21) || (m === 4 && day <= 19)) return "양자리";
+      if ((m === 4 && day >= 20) || (m === 5 && day <= 20)) return "황소자리";
+      if ((m === 5 && day >= 21) || (m === 6 && day <= 21)) return "쌍둥이자리";
+      if ((m === 6 && day >= 22) || (m === 7 && day <= 22)) return "게자리";
+      if ((m === 7 && day >= 23) || (m === 8 && day <= 22)) return "사자자리";
+      if ((m === 8 && day >= 23) || (m === 9 && day <= 22)) return "처녀자리";
+      if ((m === 9 && day >= 23) || (m === 10 && day <= 22)) return "천칭자리";
+      if ((m === 10 && day >= 23) || (m === 11 && day <= 22)) return "전갈자리";
+      if ((m === 11 && day >= 23) || (m === 12 && day <= 24)) return "사수자리";
+      if ((m === 12 && day >= 25) || (m === 1 && day <= 19)) return "염소자리";
+      if ((m === 1 && day >= 20) || (m === 2 && day <= 18)) return "물병자리";
+      return "물고기자리";
+    }
+
+    function seedFrom(dateStr, zodiac) {
+      let seed = 2166136261;
+      const input = `${dateStr}:${zodiac}`;
+      for (let i = 0; i < input.length; i++) {
+        seed ^= input.charCodeAt(i);
+        seed = Math.imul(seed, 16777619);
+      }
+      return seed >>> 0;
+    }
+
+    function seededNumbers(seed) {
+      const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+      let state = seed || 1;
+      const rand = () => {
+        state ^= state << 13;
+        state ^= state >>> 17;
+        state ^= state << 5;
+        return (state >>> 0) / 4294967296;
+      };
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool.slice(0, 6).sort((a, b) => a - b);
+    }
+
     async function ask() {
       if (!birthDate.value) {
         statusEl.textContent = "생년월일을 입력하세요";
@@ -382,13 +266,8 @@
         });
 
         const raw = await response.text();
-        let data;
-        try {
-          data = JSON.parse(raw);
-        } catch {
-          throw new Error(`서버가 JSON 대신 다른 내용을 돌려줬어요: ${raw.slice(0, 80)}`);
-        }
-        if (!response.ok) throw new Error(data.error || "요청 실패");
+        const data = raw ? JSON.parse(raw) : null;
+        if (!response.ok || !data) throw new Error("API가 JSON 응답을 반환하지 않았습니다.");
 
         addMessage(data.reply, "bot");
         zodiacEl.textContent = data.zodiac;
@@ -397,9 +276,18 @@
         if (history.length > 8) history.pop();
         renderHistory();
         statusEl.textContent = "완료";
-      } catch (error) {
-        addMessage(`오류가 발생했어요. ${error.message}`, "bot");
-        statusEl.textContent = "오류";
+      } catch {
+        const zodiac = zodiacFromDate(value);
+        const seed = seedFrom(value, zodiac);
+        const numbers = seededNumbers(seed);
+        const reply = `${zodiac} 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았어요. 서버 연결이 잠시 안 돼서 로컬 모드로 보여드려요.`;
+        addMessage(reply, "bot");
+        zodiacEl.textContent = zodiac;
+        latestEl.textContent = numbers.join(", ");
+        history.unshift(numbers);
+        if (history.length > 8) history.pop();
+        renderHistory();
+        statusEl.textContent = "로컬 모드";
       }
     }
 
