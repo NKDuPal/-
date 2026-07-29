@@ -59,7 +59,7 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model,
@@ -87,6 +87,17 @@ function makeSupabaseClient() {
 }
 
 module.exports = async (req, res) => {
+  if (req.method === "GET") {
+    res.status(200).json({
+      ok: true,
+      route: "/api/draw",
+      method: "POST",
+      openai: Boolean(process.env.OPENAI_API_KEY),
+      supabase: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+    });
+    return;
+  }
+
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
@@ -104,7 +115,8 @@ module.exports = async (req, res) => {
     const zodiac = zodiacFromDate(birthDate);
     const seed = seedFrom(birthDate, zodiac);
     const numbers = seededNumbers(seed);
-    const reply = (await callOpenAI({ birthDate, zodiac, numbers, seed })) ||
+    const reply =
+      (await callOpenAI({ birthDate, zodiac, numbers, seed })) ||
       `${zodiac}의 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았습니다.`;
 
     const supabase = makeSupabaseClient();
