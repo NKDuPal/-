@@ -5,8 +5,5 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.js"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.56.0"
   }
 }

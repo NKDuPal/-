@@ -1,5 +1,3 @@
-const { createClient } = require("@supabase/supabase-js");
-
 function zodiacFromDate(dateStr) {
   const d = new Date(dateStr);
   const m = d.getMonth() + 1;
@@ -77,13 +75,27 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
   return data.output_text || null;
 }
 
-function makeSupabaseClient() {
+async function saveToSupabase(record) {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const table = process.env.SUPABASE_TABLE || "lotto_draws";
   if (!url || !key) return null;
-  return createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
+
+  const response = await fetch(`${url}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(record),
   });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase insert error: ${response.status} ${text}`);
+  }
 }
 
 module.exports = async (req, res) => {
@@ -119,18 +131,13 @@ module.exports = async (req, res) => {
       (await callOpenAI({ birthDate, zodiac, numbers, seed })) ||
       `${zodiac}의 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았습니다.`;
 
-    const supabase = makeSupabaseClient();
-    if (supabase) {
-      const table = process.env.SUPABASE_TABLE || "lotto_draws";
-      const { error } = await supabase.from(table).insert({
-        birth_date: birthDate,
-        zodiac,
-        seed,
-        numbers,
-        reply,
-      });
-      if (error) throw error;
-    }
+    await saveToSupabase({
+      birth_date: birthDate,
+      zodiac,
+      seed,
+      numbers,
+      reply,
+    });
 
     res.status(200).json({ zodiac, numbers, seed, reply });
   } catch (error) {
