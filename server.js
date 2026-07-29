@@ -2,10 +2,20 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
+const { createClient } = require("@supabase/supabase-js");
 
 const PORT = process.env.PORT || 3000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const MODEL = "gpt-5.4-mini";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_TABLE = process.env.SUPABASE_TABLE || "lotto_draws";
+
+const supabase = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : null;
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -75,7 +85,7 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
   const prompt = [
     `생년월일 ${birthDate}의 별자리는 ${zodiac}입니다.`,
     `시드 ${seed}로 뽑힌 로또 번호는 ${numbers.join(", ")}입니다.`,
-    "한국어로 1~2문장, 너무 길지 않게 자연스럽고 세련되게 안내문을 작성하세요.",
+    "한국어로 1~2문장, 짧고 자연스럽게 결과 안내를 작성하세요.",
   ].join(" ");
 
   const response = await fetch("https://api.openai.com/v1/responses", {
@@ -85,7 +95,7 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
       "Authorization": `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: MODEL,
+      model: OPENAI_MODEL,
       input: prompt,
       max_output_tokens: 120,
     }),
@@ -98,6 +108,14 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
 
   const data = await response.json();
   return data.output_text || null;
+}
+
+async function saveToSupabase(record) {
+  if (!supabase) return null;
+
+  const { error } = await supabase.from(SUPABASE_TABLE).insert(record);
+  if (error) throw error;
+  return true;
 }
 
 function serveFile(res, filePath) {
@@ -134,7 +152,16 @@ const server = http.createServer(async (req, res) => {
       const zodiac = zodiacFromDate(birthDate);
       const seed = seedFrom(birthDate, zodiac);
       const numbers = seededNumbers(seed);
-      const reply = await callOpenAI({ birthDate, zodiac, numbers, seed }) || `${zodiac}의 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았습니다.`;
+      const reply = await callOpenAI({ birthDate, zodiac, numbers, seed }) ||
+        `${zodiac}의 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았습니다.`;
+
+      await saveToSupabase({
+        birth_date: birthDate,
+        zodiac,
+        seed,
+        numbers,
+        reply,
+      });
 
       res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       return res.end(JSON.stringify({ zodiac, numbers, seed, reply }));
@@ -146,7 +173,11 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && url.pathname === "/health") {
     res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-    return res.end(JSON.stringify({ ok: true }));
+    return res.end(JSON.stringify({
+      ok: true,
+      supabase: Boolean(supabase),
+      openai: Boolean(OPENAI_API_KEY),
+    }));
   }
 
   res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
