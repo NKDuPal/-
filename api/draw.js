@@ -59,7 +59,7 @@ async function callOpenAI({ birthDate, zodiac, numbers, seed }) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      "Authorization": `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model,
@@ -93,7 +93,9 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { birthDate } = req.body || {};
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
+    const { birthDate } = body;
+
     if (!birthDate) {
       res.status(400).json({ error: "birthDate is required" });
       return;
@@ -102,8 +104,7 @@ module.exports = async (req, res) => {
     const zodiac = zodiacFromDate(birthDate);
     const seed = seedFrom(birthDate, zodiac);
     const numbers = seededNumbers(seed);
-    const reply =
-      (await callOpenAI({ birthDate, zodiac, numbers, seed })) ||
+    const reply = (await callOpenAI({ birthDate, zodiac, numbers, seed })) ||
       `${zodiac}의 흐름에 맞춰 ${numbers.join(", ")}번을 뽑았습니다.`;
 
     const supabase = makeSupabaseClient();
