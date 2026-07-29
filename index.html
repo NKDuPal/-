@@ -381,7 +381,13 @@
           body: JSON.stringify({ birthDate: value }),
         });
 
-        const data = await response.json();
+        const raw = await response.text();
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          throw new Error(`서버가 JSON 대신 다른 내용을 돌려줬어요: ${raw.slice(0, 80)}`);
+        }
         if (!response.ok) throw new Error(data.error || "요청 실패");
 
         addMessage(data.reply, "bot");
